@@ -6,7 +6,7 @@ on:
 jobs:
   setup:
     steps:
-      - name: Get latest artifact
+      - name: Create manifest template from latest artifacts for each component
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
@@ -23,4 +23,10 @@ jobs:
           	echo "," >> manifest_template.json
           done
           echo ']' >> manifest_template.json
+    pre-prod:
+      environment: pre-prod
+      steps:
+        - name: Update manifest with environment
+        - name: Run all component deploy workflows
+    production:
 # {"artifacts":[{"resourceId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","name":"MyAppBE","type":"","url":"docker.io/MyApp/MyAppBE:2.0.0-0.0.2","version":"2.0.0-0.0.2","digest":"false","operation":"PUBLISHED","publishedBy":{"automationId":"48e010e8-dfd9-4741-b72c-25e83e953473","runId":"e9acd2a5-1818-403b-a508-59bc6f344995","runAttempt":"1","runNumber":"2","workflowName":"build","componentId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","organizationId":"8509888e-d27f-44fa-46a9-29bc76f5e790"},"publishedOn":"2024-12-13T22:36:12.958980003Z","environment":null,"deployedBy":null,"deployedOn":null},{"resourceId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","name":"MyAppFE","type":"","url":"docker.io/MyApp/MyAppFE:1.0.0-0.0.1","version":"1.0.0-0.0.1","digest":"false","operation":"PUBLISHED","publishedBy":{"automationId":"48e010e8-dfd9-4741-b72c-25e83e953473","runId":"d0ccca26-31fd-40a3-924d-3d7cd64a7878","runAttempt":"1","runNumber":"1","workflowName":"build","componentId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","organizationId":"8509888e-d27f-44fa-46a9-29bc76f5e790"},"publishedOn":"2024-12-13T22:34:58.302180305Z","environment":null,"deployedBy":null,"deployedOn":null}],"pagination":{"base":{"page":1,"pageLength":100,"sort":{"fieldName":"name","order":"ASCENDING"},"lastPage":true},"resultCount":2,"cursor":"","expiresAt":null}}
