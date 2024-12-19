@@ -45,7 +45,8 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          cat manifest_template.yaml > "$CLOUDBEES_OUTPUTS/manifest_template"
+          # Propagate the manifest template to the next job
+          echo '${{ needs.setup.outputs.manifest_template }}' > "$CLOUDBEES_OUTPUTS/manifest_template"
           echo '${{ needs.setup.outputs.manifest_template }}' | \
           jq -c '.[].environment="pre-prod"' | tee manifest.yaml
         
