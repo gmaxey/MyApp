@@ -50,7 +50,7 @@ jobs:
         with:
           workflows-dispatch-file: manifest.yaml
           token: ${{ secrets.PAT}}
-   prod:
+  prod:
     needs: pre-prod
     steps:
       - name: Update manifest file with environment
