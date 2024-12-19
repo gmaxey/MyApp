@@ -28,11 +28,11 @@ jobs:
             for artifact in $artifacts;
             do
               manifest_entry=$(echo "$artifact" |\
-              jq -c '{component_id: .resourceId, branch_name: "main", workflow_file_name: "deploy.yaml", inputs: {artifactName: .name, artifactVersion: .version, environment: "pre-prod"} }' )
+              jq -c '{component_id: .resourceId, branch_name: "main", workflow_file_name: "deploy.yaml", inputs: {artifactName: .name, artifactVersion: .version} }' )
               MANIFEST=$(echo "$MANIFEST" | jq -c '.[]' | jq -c -s --argjson b "${manifest_entry}" '.[. | length] = $b')
             done
           done
-          echo "$MANIFEST" | tee manifest.yaml
+          echo "$MANIFEST" | tee manifest_template.yaml
           echo "$MANIFEST" > "$CLOUDBEES_OUTPUTS/manifest_template"
   pre-prod:
     environment: pre-prod
@@ -45,10 +45,9 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          echo '${{ needs.setup.outputs.manifest_template }}'
+          cat manifest_template.yaml > "$CLOUDBEES_OUTPUTS/manifest_template"
           echo '${{ needs.setup.outputs.manifest_template }}' | \
           jq -c '.[].environment="pre-prod"' | tee manifest.yaml
-          cat manifest.yaml > "$CLOUDBEES_OUTPUTS/manifest_template"
         
       - name: deploy
         uses: cloudbees-io/workflows-dispatch
