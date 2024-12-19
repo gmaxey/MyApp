@@ -48,7 +48,7 @@ jobs:
           # Propagate the manifest template to the next job
           echo '${{ needs.setup.outputs.manifest_template }}' > "$CLOUDBEES_OUTPUTS/manifest_template"
           echo '${{ needs.setup.outputs.manifest_template }}' | \
-          jq -c '.[].environment="pre-prod"' | tee manifest.yaml
+          jq -c '.[].environment="pre-"' | tee manifest.yaml
         
       - name: deploy
         uses: cloudbees-io/workflows-dispatch
