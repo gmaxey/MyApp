@@ -63,7 +63,7 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          echo "'${{ needs.pre-prod.outputs.manifest_template }}'" | \
+          echo '${{ needs.pre-prod.outputs.manifest_template }}' | \
           jq -c '.[].environment="prod"' > manifest.yaml
         
       - name: deploy
