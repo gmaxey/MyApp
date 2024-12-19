@@ -35,7 +35,10 @@ jobs:
           echo "$MANIFEST" | tee manifest.yaml
           echo "$MANIFEST" > "$CLOUDBEES_OUTPUTS/manifest_template"
   pre-prod:
+    environment: pre-prod
     needs: setup
+    outputs:
+      manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
       - name: Update manifest file with environment
         id: manifest
@@ -52,6 +55,7 @@ jobs:
           workflows-dispatch-file: manifest.yaml
           token: ${{ secrets.PAT}}
   prod:
+    environment: prod
     needs: pre-prod
     steps:
       - name: Update manifest file with environment
