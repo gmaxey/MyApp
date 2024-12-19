@@ -38,6 +38,7 @@ jobs:
     needs: setup
     steps:
       - name: Update manifest file with environment
+        id: manifest
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
