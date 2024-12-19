@@ -3,30 +3,35 @@ kind: workflow
 name: BAU release
 on:
   workflow_dispatch:
+    inputs:
+      componentIds:
+        type: string
+        default: 40e01279-51b0-42a4-8464-26a9c13f0287 ab463d0a-e825-4270-baee-49a051db872c
+        required: true
 jobs:
-  setup:
+  pre-prod:
     steps:
-      - name: Create manifest template from latest artifacts for each component
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
+      - name: Create manifest
+        uses: docker://figured/alpine-curl-jq-bash
+        shell: bash
         run: |
-          ## Needs cleaning up (Use API, remove last comma, single line)
-          COMPONENT_IDS="12d0fdf5-d233-4c4a-b5f8-ee092669b8eb 9bd5b564-6f71-49f9-b4fb-047bbab802ed"
-          echo '[' > manifest_template.json
-          for compId in $COMPONENT_IDS
+          COMPONENT_IDS="${{ inputs.componentIds }}"
+          # Once available, the component ids will come from the application model through an API call
+          MANIFEST="[]" # workflow-dispatch action input
+          for COMPONENT_ID in $COMPONENT_IDS
           do 
-            curl -X 'GET' \
-            'https://api.saas-preprod.beescloud.com/v2/resources/9bd5b564-6f71-49f9-b4fb-047bbab802ed/artifactinfos?filter.latestOnly=true' \
-            --header 'Content-Type: application/json' \
-            --header 'Authorization: Bearer ${{ secrets.PAT }}' | \
-          	jq -c '.artifacts[] | {component_id: .resourceId, branch_name: "main", workflow_file_name: "deploy.yaml", inputs: "{\(["\"", "environment", "\"", ":", "\"", "$$ENV$$", "\"", ",", "\"", "name", "\"", ":", "\"", .name, "\"", ",", "\"", "version", "\"", ":", "\"", .version, "\"" ] | add)}" }' | tee -a manifest_template.json
-          	echo "," >> manifest_template.json
+            artifacts=$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v2/resources/$COMPONENT_ID/artifactinfos?filter.latestOnly=true    --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_0IkBCObCqQPEY6y1tiQ/ja/5dMLspjrLpZV4c8UGYR2uNJ6FjjKHzZvMP8laO6bEoI1neMz4TFEW4IdCQFPauQ==' | jq -c '.artifacts[]')
+            # Process each artifact
+            for artifact in $artifacts;
+            do
+              manifest_entry=$(echo "$artifact" |\
+              jq -c '{component_id: .resourceId, branch_name: "main", workflow_file_name: "deploy.yaml", inputs: {artifactName: .name, artifactVersion: .version, environment: "pre-prod"} }' )
+              MANIFEST=$(echo "$MANIFEST" | jq -c '.[]' | jq -c -s --argjson b "${manifest_entry}" '.[. | length] = $b')
+            done
           done
-          echo ']' >> manifest_template.json
-    pre-prod:
-      environment: pre-prod
-      steps:
-        - name: Update manifest with environment
-        - name: Run all component deploy workflows
-    production:
-# {"artifacts":[{"resourceId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","name":"MyAppBE","type":"","url":"docker.io/MyApp/MyAppBE:2.0.0-0.0.2","version":"2.0.0-0.0.2","digest":"false","operation":"PUBLISHED","publishedBy":{"automationId":"48e010e8-dfd9-4741-b72c-25e83e953473","runId":"e9acd2a5-1818-403b-a508-59bc6f344995","runAttempt":"1","runNumber":"2","workflowName":"build","componentId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","organizationId":"8509888e-d27f-44fa-46a9-29bc76f5e790"},"publishedOn":"2024-12-13T22:36:12.958980003Z","environment":null,"deployedBy":null,"deployedOn":null},{"resourceId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","name":"MyAppFE","type":"","url":"docker.io/MyApp/MyAppFE:1.0.0-0.0.1","version":"1.0.0-0.0.1","digest":"false","operation":"PUBLISHED","publishedBy":{"automationId":"48e010e8-dfd9-4741-b72c-25e83e953473","runId":"d0ccca26-31fd-40a3-924d-3d7cd64a7878","runAttempt":"1","runNumber":"1","workflowName":"build","componentId":"9bd5b564-6f71-49f9-b4fb-047bbab802ed","organizationId":"8509888e-d27f-44fa-46a9-29bc76f5e790"},"publishedOn":"2024-12-13T22:34:58.302180305Z","environment":null,"deployedBy":null,"deployedOn":null}],"pagination":{"base":{"page":1,"pageLength":100,"sort":{"fieldName":"name","order":"ASCENDING"},"lastPage":true},"resultCount":2,"cursor":"","expiresAt":null}}
+          echo "$MANIFEST" | tee manifest.yaml
+      - name: deploy
+        uses: cloudbees-io/workflows-dispatch
+        with:
+          workflows-dispatch-file: manifest.yaml
+          token: ${{ secrets.PAT}}
