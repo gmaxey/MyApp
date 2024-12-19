@@ -9,9 +9,12 @@ on:
         default: 40e01279-51b0-42a4-8464-26a9c13f0287 ab463d0a-e825-4270-baee-49a051db872c
         required: true
 jobs:
-  pre-prod:
+  setup:
+    outputs:
+      manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
       - name: Create manifest
+        id: manifest
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
@@ -30,8 +33,35 @@ jobs:
             done
           done
           echo "$MANIFEST" | tee manifest.yaml
+          echo "$MANIFEST" > "$CLOUDBEES_OUTPUTS/manifest_template"
+  pre-prod:
+    needs: setup
+    steps:
+      - name: Update manifest file with environment
+        uses: docker://figured/alpine-curl-jq-bash
+        shell: bash
+        run: |
+          echo "'${{ needs.setup.outputs.manifest_template }}'" | \
+          jq -c '.[].environment="pre-prod"' | tee manifest.yaml
+          cat manifest.yaml > "$CLOUDBEES_OUTPUTS/manifest_template"
+        
       - name: deploy
         uses: cloudbees-io/workflows-dispatch
         with:
           workflows-dispatch-file: manifest.yaml
           token: ${{ secrets.PAT}}
+   prod:
+    needs: pre-prod
+    steps:
+      - name: Update manifest file with environment
+        uses: docker://figured/alpine-curl-jq-bash
+        shell: bash
+        run: |
+          echo "'${{ needs.pre-prod.outputs.manifest_template }}'" | \
+          jq -c '.[].environment="prod"' > manifest.yaml
+        
+      - name: deploy
+        uses: cloudbees-io/workflows-dispatch
+        with:
+          workflows-dispatch-file: manifest.yaml
+          token: ${{ secrets.PAT}} 
