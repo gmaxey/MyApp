@@ -64,7 +64,7 @@ jobs:
         shell: bash
         run: |
           echo '${{ needs.pre-prod.outputs.manifest_template }}' | \
-          jq -c '.[].environment="prod"' > manifest.yaml
+          jq -c '.[].environment="prod"' | tee manifest.yaml
         
       - name: deploy
         uses: cloudbees-io/workflows-dispatch
