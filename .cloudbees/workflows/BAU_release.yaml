@@ -4,10 +4,11 @@ name: BAU release
 on:
   workflow_dispatch:
 
+env:
+  PAT: "${{ secrets.PAT }}"
+
 jobs:
   setup:
-    env:
-      PAT: "${{ secrets.PAT }}"
     outputs:
       manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
