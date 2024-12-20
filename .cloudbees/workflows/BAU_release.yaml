@@ -3,11 +3,7 @@ kind: workflow
 name: BAU release
 on:
   workflow_dispatch:
-    inputs:
-      componentIds:
-        type: string
-        default: 40e01279-51b0-42a4-8464-26a9c13f0287 ab463d0a-e825-4270-baee-49a051db872c
-        required: true
+
 jobs:
   setup:
     outputs:
@@ -18,12 +14,12 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          COMPONENT_IDS="${{ inputs.componentIds }}"
+          COMPONENT_IDS="$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header 'Authorization: Bearer ${{ secrets.PAM }}' | jq -r '.service.linkedComponentIds[]')"
           # Once available, the component ids will come from the application model through an API call
           MANIFEST="[]" # workflow-dispatch action input
           for COMPONENT_ID in $COMPONENT_IDS
           do 
-            artifacts=$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v2/resources/$COMPONENT_ID/artifactinfos?filter.latestOnly=true    --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_0IkBCObCqQPEY6y1tiQ/ja/5dMLspjrLpZV4c8UGYR2uNJ6FjjKHzZvMP8laO6bEoI1neMz4TFEW4IdCQFPauQ==' | jq -c '.artifacts[]')
+            artifacts=$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v2/resources/$COMPONENT_ID/artifactinfos?filter.latestOnly=true    --header 'Content-Type: application/json'       --header 'Authorization: Bearer ${{ secrets.PAM }}' | jq -c '.artifacts[]')
             # Process each artifact
             for artifact in $artifacts;
             do
