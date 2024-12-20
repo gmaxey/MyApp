@@ -7,7 +7,8 @@ on:
 jobs:
   setup:
     env:
-      PAT: "${{ secrets.PAT }}"
+      #PAT: "${{ secrets.PAT }}"
+      PAT: cb_api_dD7ywcFKwk0M6343HBf2UOnd3e9kWZRYGIpFLS1bddcIIcVR4CdAgChOhZ2Tv2Gg9ms/2qZ/79dLU5I7hMDvKg==
     outputs:
       manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
