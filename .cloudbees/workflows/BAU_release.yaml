@@ -5,9 +5,8 @@ on:
   workflow_dispatch:
 
 env:
-  #PAT: "${{ secrets.PAT }}"
-  PAT: "cb_api_dD7ywcFKwk0M6343HBf2UOnd3e9kWZRYGIpFLS1bddcIIcVR4CdAgChOhZ2Tv2Gg9ms/2qZ/79dLU5I7hMDvKg=="
-
+  PAT: "${{ secrets.PAT }}"
+  
 jobs:
   setup:
     outputs:
