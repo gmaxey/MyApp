@@ -6,6 +6,8 @@ on:
 
 jobs:
   setup:
+    env:
+      PAT: "${{ secrets.PAT }}"
     outputs:
       manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
@@ -14,8 +16,8 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_dD7ywcFKwk0M6343HBf2UOnd3e9kWZRYGIpFLS1bddcIIcVR4CdAgChOhZ2Tv2Gg9ms/2qZ/79dLU5I7hMDvKg=='
-          COMPONENT_IDS="$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_dD7ywcFKwk0M6343HBf2UOnd3e9kWZRYGIpFLS1bddcIIcVR4CdAgChOhZ2Tv2Gg9ms/2qZ/79dLU5I7hMDvKg==' | jq -r '.service.linkedComponentIds[]')"
+          curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT"
+          COMPONENT_IDS="$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT" | jq -r '.service.linkedComponentIds[]')"
           echo $COMPONENT_IDS > "$CLOUDBEES_OUTPUTS/componentIds"             
         
       - name: Create manifest
@@ -27,7 +29,7 @@ jobs:
           MANIFEST="[]" # workflow-dispatch action input
           for COMPONENT_ID in $COMPONENT_IDS
           do 
-            artifacts=$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v2/resources/$COMPONENT_ID/artifactinfos?filter.latestOnly=true    --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_dD7ywcFKwk0M6343HBf2UOnd3e9kWZRYGIpFLS1bddcIIcVR4CdAgChOhZ2Tv2Gg9ms/2qZ/79dLU5I7hMDvKg==' | jq -c '.artifacts[]')
+            artifacts=$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v2/resources/$COMPONENT_ID/artifactinfos?filter.latestOnly=true    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT" | jq -c '.artifacts[]')
             # Process each artifact
             for artifact in $artifacts;
             do
