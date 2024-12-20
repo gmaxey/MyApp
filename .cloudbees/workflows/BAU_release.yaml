@@ -14,6 +14,10 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
+          echo << EOF
+            curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header 'Authorization: Bearer ${{ secrets.PAT }}'
+          EOF
+          curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header 'Authorization: Bearer ${{ secrets.PAT }}'
           COMPONENT_IDS="$(curl -X 'GET' https://api.saas-preprod.beescloud.com/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header 'Authorization: Bearer ${{ secrets.PAT }}' | jq -r '.service.linkedComponentIds[]')"
           # Once available, the component ids will come from the application model through an API call
           MANIFEST="[]" # workflow-dispatch action input
