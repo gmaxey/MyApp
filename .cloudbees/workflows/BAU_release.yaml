@@ -1,3 +1,8 @@
+# TODO
+# 1. orgcomp step is not working and the hardcoded workflow needs to be replaced with a dynamic value
+# 2. components step not working because of #1. It works with hardcoded values.
+# 3. Environment support not working
+
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: BAU release
