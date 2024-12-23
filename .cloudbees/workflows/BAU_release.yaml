@@ -27,6 +27,7 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
+          echo curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/${{ steps.orgcomp.outputs.orgId}}/services/${{ steps.orgcomp.outputs.componentId}}    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT"
           curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/${{ steps.orgcomp.outputs.orgId}}/services/${{ steps.orgcomp.outputs.componentId}}    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT"
           COMPONENT_IDS="$(curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/${{ steps.orgcomp.outputs.orgId}}/services/${{ steps.orgcomp.outputs.componentId}}    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT" | jq -r '.service.linkedComponentIds[]')"
           echo $COMPONENT_IDS > "$CLOUDBEES_OUTPUTS/componentIds"             
