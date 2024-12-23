@@ -13,13 +13,22 @@ jobs:
     outputs:
       manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
+      - name: Get org and component IDs from workflow
+        id: orgcomp
+        uses: docker://figured/alpine-curl-jq-bash
+        shell: bash
+        run: |
+          REPSONSE=$(curl -X 'GET'  ${CLOUDBEES_API_URL}/v1/resources/5326d2d5-d712-4038-b6a9-7756d2409ac0?parents=true --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_n5HbgkwOlBzvuloz82A1HWOSFLVOIkayNpU6qotiYT/qe8Vn5CFh9ny8WF/yXkS9b84qoRIhkSzL3yNfYW4CNQ==')
+          echo "$REPSONSE" | jq -c -r '.parents[] | select(.type=="RESOURCE_TYPE_ORGANIZATION") | .id' | head -1 > "$CLOUDBEES_OUTPUTS/orgId"
+          echo "$REPSONSE" | jq -c -r '.parents[] | select(.type=="RESOURCE_TYPE_REPOSITORY") | .id' > "$CLOUDBEES_OUTPUTS/componentId"
+     
       - name: Get component IDs from the application
         id: components
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT"
-          COMPONENT_IDS="$(curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/3d18fc74-5e3e-4792-b3d0-c41c97cf985e/services/ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT" | jq -r '.service.linkedComponentIds[]')"
+          curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/${{ steps.orgcomp.outputs.orgId}}/services/${{ steps.orgcomp.outputs.componentId}}    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT"
+          COMPONENT_IDS="$(curl -X 'GET' ${CLOUDBEES_API_URL}/v1/resources/${{ steps.orgcomp.outputs.orgId}}/services/${{ steps.orgcomp.outputs.componentId}}    --header 'Content-Type: application/json'       --header "Authorization: Bearer $PAT" | jq -r '.service.linkedComponentIds[]')"
           echo $COMPONENT_IDS > "$CLOUDBEES_OUTPUTS/componentIds"             
         
       - name: Create manifest
