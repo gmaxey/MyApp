@@ -36,7 +36,7 @@ jobs:
             for artifact in $artifacts;
             do
               manifest_entry=$(echo "$artifact" |\
-              jq -c '{component_id: .resourceId, branch_name: "main", workflow_file_name: "deploy.yaml", inputs: {artifactName: .name, artifactVersion: .version} }' )
+              jq -c '{component_id: .resourceId, branch_name: "main", workflow_file_name: "deploy.yaml", inputs: {artifactName: .name, artifactVersion: .version, url: .url, digest: .digest} }' )
               MANIFEST=$(echo "$MANIFEST" | jq -c '.[]' | jq -c -s --argjson b "${manifest_entry}" '.[. | length] = $b')
             done
           done
