@@ -21,6 +21,7 @@ jobs:
           REPSONSE=$(curl -X 'GET'  ${CLOUDBEES_API_URL}/v1/resources/5326d2d5-d712-4038-b6a9-7756d2409ac0?parents=true --header 'Content-Type: application/json'       --header 'Authorization: Bearer cb_api_n5HbgkwOlBzvuloz82A1HWOSFLVOIkayNpU6qotiYT/qe8Vn5CFh9ny8WF/yXkS9b84qoRIhkSzL3yNfYW4CNQ==')
           echo "$REPSONSE" | jq -c -r '.parents[] | select(.type=="RESOURCE_TYPE_ORGANIZATION") | .id' | head -1 > "$CLOUDBEES_OUTPUTS/orgId" | tr -d '\n'
           echo "$REPSONSE" | jq -c -r '.parents[] | select(.type=="RESOURCE_TYPE_REPOSITORY") | .id' > "$CLOUDBEES_OUTPUTS/componentId" | tr -d '\n'
+          echo "resources/$(cat $CLOUDBEES_OUTPUTS/orgId)/services/$(cat $CLOUDBEES_OUTPUTS/componentId)"
    
       - name: Get component IDs from the application
         id: components
