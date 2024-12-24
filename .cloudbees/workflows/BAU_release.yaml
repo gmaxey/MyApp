@@ -1,5 +1,6 @@
 # TODO
 # 1. orgcomp step is not working and the hardcoded workflow needs to be replaced with a dynamic value
+# 2. API authentication not working, works in production with https://cloudbees.io/orgs/cloudbees/components/runs/f6908ca9-cb8b-496b-a30a-9803535bd18f/8f2a2b97-7de5-4b00-b8f7-e964add3c585/bdb6dfd3-e695-4ec2-bb71-e18ddbb57d29/1?componentId=f6908ca9-cb8b-496b-a30a-9803535bd18f&workflowId=8f2a2b97-7de5-4b00-b8f7-e964add3c585&organizationId=77f88258-7aa3-45bf-47c6-d869838d9770&job=build
 # 2. components step not working because of #1. It works with hardcoded values.
 # 3. Environment support not working
 
