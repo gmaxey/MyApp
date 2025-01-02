@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  PAT: "cb_api_OXldqH1v1oVPv6EM+HYiLzFLBx+qwbt9Nj6V3rs1dNQMYe/zHDiW/thYmb+BdO8dj6S1/leTdizY3MShLIFKtA==" # "${{ secrets.PAT }}"
+  PAT: "${{ secrets.PAT }}"
   CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
   
 jobs:
