@@ -5,6 +5,11 @@
 # 3. creates a manifest template file for the cloudbees-io/workflows-dispatch action based on the artifact versions found
 # 4. in the pre-prod job, the manifest file is updated to include the environment name (pre-prod) and cloudbees-io/workflows-dispatch called
 
+# Instructions
+# 1. A personal access token is required. Create one an save it as a secret "PAT" in the application org or higher.
+# 2. The workflow requires components that include a workflow called "deploy.yaml"
+# 3. The workflow will only run the component deploy.yaml workflow if there is an artifact version on that component. Create and run a workflow that creates at least one artifact version
+
 # TODO
 # 1. The workflow run needs a way to find the application components. Currently, the workflow uses a hardcoded workflowId to find its (the workflow and application) org and component.
 #    With those values, the components can be found. The hardcoded value for the workflow was found from the workflow YAML editor:
