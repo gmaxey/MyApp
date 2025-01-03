@@ -1,8 +1,16 @@
+# This workflow implements a basic release process that deploys the latest component versions for an application.
+# To do this, the workflow
+# 1. identifies all the components associated with the application
+# 2. identifies the last artifact versions on each component
+# 3. creates a manifest template file for the cloudbees-io/workflows-dispatch action based on the artifact versions found
+# 4. in the pre-prod job, the manifest file is updated to include the environment name (pre-prod) and cloudbees-io/workflows-dispatch called
+
 # TODO
-# 1. orgcomp step is not working and the hardcoded workflow needs to be replaced with a dynamic value
-# 2. API authentication not working, works in production with https://cloudbees.io/orgs/cloudbees/components/runs/f6908ca9-cb8b-496b-a30a-9803535bd18f/8f2a2b97-7de5-4b00-b8f7-e964add3c585/bdb6dfd3-e695-4ec2-bb71-e18ddbb57d29/1?componentId=f6908ca9-cb8b-496b-a30a-9803535bd18f&workflowId=8f2a2b97-7de5-4b00-b8f7-e964add3c585&organizationId=77f88258-7aa3-45bf-47c6-d869838d9770&job=build
-# 2. components step not working because of #1. It works with hardcoded values.
-# 3. Environment support not working
+# 1. The workflow run needs a way to find the application components. Currently, the workflow uses a hardcoded workflowId to find its (the workflow and application) org and component.
+#    With those values, the components can be found. The hardcoded value for the workflow was found from the workflow YAML editor:
+#    https://saas-preprod.beescloud.com/orgs/cloudbees-preprod/components/workflows/main/composer?fileName=BAU_release.yaml&branch=main&workflowId=5326d2d5-d712-4038-b6a9-7756d2409ac0&componentId=ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4&organizationId=3d18fc74-5e3e-4792-b3d0-c41c97cf985e
+#    This will probably require new ${{ cloudbess.xxx }} contexts, perhaps cloudbees.org and cloudbees.component
+# 2. Environment support not working...
 
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
