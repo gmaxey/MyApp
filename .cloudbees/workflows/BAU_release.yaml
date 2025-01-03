@@ -88,10 +88,4 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          echo '${{ needs.pre-prod.outputs.manifest_template }}' | \
-          jq -c '.[].inputs.environment="prod"' | tee manifest.yaml
-      - name: deploy
-        uses: cloudbees-io/workflows-dispatch
-        with:
-          workflows-dispatch-file: manifest.yaml
-          token: ${{ secrets.PAT}}
+          echo Deploying to production
