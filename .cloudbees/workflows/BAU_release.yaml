@@ -24,9 +24,9 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          RESPONSE=$(curl -X 'GET'  ${CLOUDBEES_API_URL}/v1/resources/5326d2d5-d712-4038-b6a9-7756d2409ac0?parents=true \
+          RESPONSE=$(curl -X 'GET'  "${CLOUDBEES_API_URL}/v1/resources/5326d2d5-d712-4038-b6a9-7756d2409ac0?parents=true" \
             --header 'Content-Type: application/json' \
-            --header 'Authorization: Bearer $PAT')
+            --header "Authorization: Bearer $PAT")
           echo "RESPONSE: ${RESPONSE}"
           echo "$RESPONSE" | jq -c -r '.parents[] | select(.type=="RESOURCE_TYPE_ORGANIZATION") | .id' | head -1 | tr -d '\n' > "$CLOUDBEES_OUTPUTS/orgId"
           echo "$RESPONSE" | jq -c -r '.parents[] | select(.type=="RESOURCE_TYPE_REPOSITORY") | .id' | tr -d '\n' > "$CLOUDBEES_OUTPUTS/componentId"
