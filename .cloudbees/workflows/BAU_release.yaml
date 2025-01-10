@@ -1,9 +1,12 @@
 # This workflow implements a basic release process that deploys the latest component versions for an application.
 # To do this, the workflow
-# 1. identifies all the components associated with the application
-# 2. identifies the last artifact versions on each component
-# 3. creates a manifest template file for the cloudbees-io/workflows-dispatch action based on the artifact versions found
-# 4. in the pre-prod job, the manifest file is updated to include the environment name (pre-prod) and cloudbees-io/workflows-dispatch called
+# 1. Calls an an action that
+#    1. identifies all the components associated with the application
+#    2. identifies the latest artifact versions on each component
+#    3. creates a base manifest for the cloudbees-io/workflows-dispatch action based on the artifact versions found and outputs the base manifest as a parameter
+# 2. For each environment job (pre-prod, prod),
+#    1. An action is called to to insert the environment value into the manifest and save the manifest to a file
+#    2. The cloudbees-io/workflows-dispatch action is called to kick off the component deployment workflows
 
 # Instructions
 # 1. A personal access token is required. Create one an save it as a secret "PAT" in the application org or higher.
@@ -11,10 +14,10 @@
 # 3. The workflow will only run the component deploy.yaml workflow if there is an artifact version on that component. Create and run a workflow that creates at least one artifact version
 
 # TODO
-# 1. The workflow run needs a way to find the application components. Currently, the workflow uses a hardcoded workflowId to find its (the workflow and application) org and component.
+# 1. The workflow run needs a way to find the application its components. Currently, the workflow uses a hardcoded workflowId to find its (the workflow and application) org and component.
 #    With those values, the components can be found. The hardcoded value for the workflow was found from the workflow YAML editor:
 #    https://saas-preprod.beescloud.com/orgs/cloudbees-preprod/components/workflows/main/composer?fileName=BAU_release.yaml&branch=main&workflowId=5326d2d5-d712-4038-b6a9-7756d2409ac0&componentId=ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4&organizationId=3d18fc74-5e3e-4792-b3d0-c41c97cf985e
-#    This will probably require new ${{ cloudbess.xxx }} contexts, perhaps cloudbees.org and cloudbees.component
+#    This will probably require new ${{ cloudbess.xxx }} contexts, perhaps cloudbees.organization and cloudbees.component
 # 2. Environment support is hard-coded with conditionals, that is only pre-prod and prod environments can be used. Two fixes are being worked on to address this: environment inheritance for reusable workflows and environment parameterization
 
 apiVersion: automation.cloudbees.io/v1alpha1
