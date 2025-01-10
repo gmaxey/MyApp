@@ -35,7 +35,7 @@ env:
 jobs:
   setup:
     outputs:
-      manifest_template: ${{ steps.manifest.outputs.manifest_template }}
+      base-manifest: ${{ steps.manifest.outputs.base-manifest }}
     steps:
       - name: Create manifest from latest artifacts in current org
         id: manifest
