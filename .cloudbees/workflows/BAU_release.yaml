@@ -108,14 +108,12 @@ jobs:
       - setup
     steps:
       - name: Update manifest file with environment
-        id: manifest
-        uses: docker://figured/alpine-curl-jq-bash
-        shell: bash
-        run: |
-          # Propagate the manifest template to the next job
-          echo '${{ needs.setup.outputs.manifest_template }}' > "$CLOUDBEES_OUTPUTS/manifest_template"
-          echo '${{ needs.setup.outputs.manifest_template }}' | \
-          jq -c '.[].inputs.environment="prod"' | tee manifest.yaml
+        uses: gmaxey/create-manifest-file
+        with:
+          base-manifest: ${{ needs.setup.outputs.manifest_template }}
+          environment: prod
+          file: manifest.yaml
+          
       - name: deploy
         uses: cloudbees-io/workflows-dispatch
         with:
