@@ -74,8 +74,6 @@ jobs:
   pre-prod:
     environment: pre-prod
     needs: setup
-    outputs:
-      manifest_template: ${{ steps.manifest.outputs.manifest_template }}
     steps:
       - name: Update manifest file with environment
         id: manifest
@@ -101,10 +99,21 @@ jobs:
       instructions: Please approve for production deployment
   prod:
     environment: prod
-    needs: SRE
+    needs:
+      - SRE
+      - setup
     steps:
       - name: Update manifest file with environment
+        id: manifest
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          echo Deploying to production
+          # Propagate the manifest template to the next job
+          echo '${{ needs.setup.outputs.manifest_template }}' > "$CLOUDBEES_OUTPUTS/manifest_template"
+          echo '${{ needs.setup.outputs.manifest_template }}' | \
+          jq -c '.[].inputs.environment="prod"' | tee manifest.yaml
+      - name: deploy
+        uses: cloudbees-io/workflows-dispatch
+        with:
+          workflows-dispatch-file: manifest.yaml
+          token: ${{ secrets.PAT}}
