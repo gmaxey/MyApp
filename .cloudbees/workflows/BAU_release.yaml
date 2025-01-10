@@ -22,6 +22,11 @@ kind: workflow
 name: BAU release
 on:
   workflow_dispatch:
+    inputs:
+      workflowId:
+        default: 5326d2d5-d712-4038-b6a9-7756d2409ac0
+        required: true
+        description: This value can be found in the YAML editor URL: workflowId=<grab this value>
 env:
   PAT: ${{ secrets.PAT }}
   CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
@@ -35,7 +40,7 @@ jobs:
         uses: docker://figured/alpine-curl-jq-bash
         shell: bash
         run: |
-          RESPONSE=$(curl -X 'GET'  "${CLOUDBEES_API_URL}/v1/resources/5326d2d5-d712-4038-b6a9-7756d2409ac0?parents=true" \
+          RESPONSE=$(curl -X 'GET'  "${CLOUDBEES_API_URL}/v1/resources/${{ inputs.workflowId }}?parents=true" \
             --header 'Content-Type: application/json' \
             --header "Authorization: Bearer $PAT")
           echo "RESPONSE: ${RESPONSE}"
