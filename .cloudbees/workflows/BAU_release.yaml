@@ -24,9 +24,10 @@ on:
   workflow_dispatch:
     inputs:
       workflowId:
+        type: string
         default: 5326d2d5-d712-4038-b6a9-7756d2409ac0
         required: true
-        description: This value can be found in the YAML editor URL: workflowId=<grab this value>
+        description: 'This value can be found in the YAML editor URL: workflowId=<grab this value>'
 env:
   PAT: ${{ secrets.PAT }}
   CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
