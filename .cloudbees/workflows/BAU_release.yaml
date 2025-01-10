@@ -15,7 +15,7 @@
 #    With those values, the components can be found. The hardcoded value for the workflow was found from the workflow YAML editor:
 #    https://saas-preprod.beescloud.com/orgs/cloudbees-preprod/components/workflows/main/composer?fileName=BAU_release.yaml&branch=main&workflowId=5326d2d5-d712-4038-b6a9-7756d2409ac0&componentId=ceeaabb9-5e28-4b18-a7e5-5c8c507e98e4&organizationId=3d18fc74-5e3e-4792-b3d0-c41c97cf985e
 #    This will probably require new ${{ cloudbess.xxx }} contexts, perhaps cloudbees.org and cloudbees.component
-# 2. Environment support not working...
+# 2. Environment support is hard-coded with conditionals, that is only pre-prod and prod environments can be used. Two fixes are being worked on to address this: environment inheritance for reusable workflows and environment parameterization
 
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
