@@ -67,7 +67,7 @@ jobs:
     delegates: cloudbees-io/manual-approval/custom-job.yml@v1
     needs: pre-prod
     with:
-      approvers: 9e6cef82-03d3-11eb-9d67-42010a83ae35
+      approvers: 9e6cef82-03d3-11eb-9d67-42010a83ae35,3b95fb7e-e80d-11ea-a794-42010a83ae1a
       disallowLaunchByUser: false
       instructions: Please approve for production deployment
   prod:
