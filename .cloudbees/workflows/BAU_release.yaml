@@ -67,7 +67,7 @@ jobs:
     delegates: cloudbees-io/manual-approval/custom-job.yml@v1
     needs: pre-prod
     with:
-      approvers:
+      approvers: ""
       disallowLaunchByUser: false
       instructions: Please approve for production deployment
   prod:
