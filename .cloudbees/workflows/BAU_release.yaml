@@ -29,7 +29,7 @@ on:
     inputs:
       workflowId:
         type: string
-        default: 5326d2d5-d712-4038-b6a9-7756d2409ac0
+        default: ccbbf8c8-4d52-4b86-b25a-43e66a06c46d
         required: true
         description: 'This value can be found in the YAML editor URL: workflowId=<grab this value>'
 env:
