@@ -13,7 +13,9 @@ on:
 jobs:
   create:
     steps:
+      - name: Checkout code
+        uses: cloudbees-io/checkout@v1
       - name: Generate deployer.yaml from manifest
         uses: docker://groovy
         run: |
-          groovy manifest-to-deployer.groovy
+          groovy .cloudbees/workflows/manifest-to-deployer.groovy
