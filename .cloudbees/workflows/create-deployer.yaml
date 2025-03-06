@@ -16,4 +16,4 @@ jobs:
       - name: Generate deployer.yaml from manifest
         uses: docker://groovy
         run: |
-          1+1
+          groovy manifest-to-deployer.groovy
