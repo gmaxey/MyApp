@@ -1,3 +1,5 @@
+// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy 
+
 @Grab('org.yaml:snakeyaml:1.33')
 @Grab('org.codehaus.groovy:groovy-json')
 import org.yaml.snakeyaml.Yaml
@@ -15,10 +17,10 @@ def parsedJson = jsonSlurper.parseText(jsonInput)
 def steps = parsedJson.collect { entry ->
     [
         name: entry.name,
-        uses: entry.workflow,
+        uses: "gmaxey/reusableworkflows/MyAppDeploy.yaml", // entry.workflow,
         with: [
-            name: entry.name,
-            version: entry.version,
+            artifactName: entry.name,
+            artifactVersion: entry.version,
             environment: "pre-prod"
         ]
     ]
@@ -30,7 +32,8 @@ def data = [
     kind: "workflow",
     name: "workflow",
     on: [
-        workflow_dispatch: null
+        workflow_dispatch: null,
+	workflow_call: null 
     ],
     jobs: [
         deploy: [
@@ -44,6 +47,7 @@ def options = new DumperOptions()
 options.setIndent(2)              // Set indentation to 2 spaces
 options.setPrettyFlow(true)       // Enable pretty printing
 options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK) // Use block style for nested structures
+options.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN) // Use plain style for scalars
 
 // Create YAML object with custom options
 Yaml yaml = new Yaml(options)
