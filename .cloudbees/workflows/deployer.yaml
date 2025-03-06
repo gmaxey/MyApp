@@ -5,23 +5,21 @@ name: workflow
   workflow_dispatch: null
   workflow_call: null
 jobs:
-  deploy:
-    steps:
-    - name: MyAppAPIs
-      uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
-      with:
-        artifactName: MyAppAPIs
-        artifactVersion: 2.0.5-0.0.17
-        environment: pre-prod
-    - name: MyAppFE
-      uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
-      with:
-        artifactName: MyAppFE
-        artifactVersion: 3.0.3-0.0.14
-        environment: pre-prod
-    - name: MyAppBE
-      uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
-      with:
-        artifactName: MyAppBE
-        artifactVersion: 2.2.0-0.0.21
-        environment: pre-prod
+  MyAppAPIs:
+    uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
+    with:
+      artifactName: MyAppAPIs
+      artifactVersion: 2.0.5-0.0.17
+      environment: pre-prod
+  MyAppFE:
+    uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
+    with:
+      artifactName: MyAppFE
+      artifactVersion: 3.0.3-0.0.14
+      environment: pre-prod
+  MyAppBE:
+    uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
+    with:
+      artifactName: MyAppBE
+      artifactVersion: 2.2.0-0.0.21
+      environment: pre-prod

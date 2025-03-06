@@ -1,5 +1,7 @@
 // docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy 
 
+// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy 
+
 @Grab('org.yaml:snakeyaml:1.33')
 @Grab('org.codehaus.groovy:groovy-json')
 import org.yaml.snakeyaml.Yaml
@@ -13,33 +15,30 @@ def jsonInput = '[{"name":"MyAppAPIs","version":"2.0.5-0.0.17","workflow":"deplo
 def jsonSlurper = new JsonSlurper()
 def parsedJson = jsonSlurper.parseText(jsonInput)
 
-// Generate steps dynamically from JSON
-def steps = parsedJson.collect { entry ->
+// Generate jobs dynamically from JSON
+def jobs = parsedJson.collectEntries { entry ->
     [
-        name: entry.name,
-        uses: "gmaxey/reusableworkflows/MyAppDeploy.yaml", // entry.workflow,
-        with: [
-            artifactName: entry.name,
-            artifactVersion: entry.version,
-            environment: "pre-prod"
+        (entry.name): [
+            uses: "gmaxey/reusableworkflows/MyAppDeploy.yaml",
+            with: [
+                artifactName: entry.name,
+                artifactVersion: entry.version,
+                environment: "pre-prod"
+            ]
         ]
     ]
 }
 
-// Define the data structure with dynamic steps
+// Define the data structure with dynamic jobs
 def data = [
     apiVersion: "automation.cloudbees.io/v1alpha1",
     kind: "workflow",
     name: "workflow",
     on: [
         workflow_dispatch: null,
-	workflow_call: null 
+        workflow_call: null 
     ],
-    jobs: [
-        deploy: [
-            steps: steps
-        ]
-    ]
+    jobs: jobs
 ]
 
 // Configure DumperOptions for better YAML formatting
