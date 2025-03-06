@@ -1,6 +1,7 @@
 @Grab('org.yaml:snakeyaml:1.33')
 @Grab('org.codehaus.groovy:groovy-json')
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.DumperOptions
 import groovy.json.JsonSlurper
 
 // Define the JSON input
@@ -14,8 +15,12 @@ def parsedJson = jsonSlurper.parseText(jsonInput)
 def steps = parsedJson.collect { entry ->
     [
         name: entry.name,
-        uses: entry.uses,
-        with: entry.with
+        uses: entry.workflow,
+        with: [
+            name: entry.name,
+            version: entry.version,
+            environment: "pre-prod"
+        ]
     ]
 }
 
@@ -28,14 +33,20 @@ def data = [
         workflow_dispatch: null
     ],
     jobs: [
-        build: [
+        deploy: [
             steps: steps
         ]
     ]
 ]
 
-// Create YAML object
-Yaml yaml = new Yaml()
+// Configure DumperOptions for better YAML formatting
+def options = new DumperOptions()
+options.setIndent(2)              // Set indentation to 2 spaces
+options.setPrettyFlow(true)       // Enable pretty printing
+options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK) // Use block style for nested structures
+
+// Create YAML object with custom options
+Yaml yaml = new Yaml(options)
 
 // Convert data to YAML string
 String yamlString = yaml.dump(data)
@@ -44,4 +55,4 @@ String yamlString = yaml.dump(data)
 println yamlString
 
 // Optionally, write to a file
-new File("workflow.yaml").text = yamlString
+new File("deployer.yaml").text = yamlString
