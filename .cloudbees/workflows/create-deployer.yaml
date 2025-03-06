@@ -1,0 +1,19 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: Create deployer
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        default: |
+          [{"name":"MyAppAPIs","version":"2.0.5-0.0.17","workflow":"deploy.yaml"},{"name":"MyAppFE","version":"3.0.3-0.0.14","workflow":"deploy.yaml"},{"name":"MyAppBE","version":"2.2.0-0.0.21","workflow":"deploy.yaml"}]
+
+jobs:
+  create:
+    steps:
+      - name: Generate deployer.yaml from manifest
+        uses: docker://groovy
+        run: |
+          1+1
