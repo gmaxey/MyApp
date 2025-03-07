@@ -1,6 +1,4 @@
-// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy 
-
-// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy 
+// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy '<JSON_HERE>'
 
 @Grab('org.yaml:snakeyaml:1.33')
 @Grab('org.codehaus.groovy:groovy-json')
@@ -8,8 +6,14 @@ import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.DumperOptions
 import groovy.json.JsonSlurper
 
-// Define the JSON input
-def jsonInput = '[{"name":"MyAppAPIs","version":"2.0.5-0.0.17","workflow":"deploy.yaml"},{"name":"MyAppFE","version":"3.0.3-0.0.14","workflow":"deploy.yaml"},{"name":"MyAppBE","version":"2.2.0-0.0.21","workflow":"deploy.yaml"}]'
+// Check if JSON input is provided as a command-line argument
+if (args.length == 0) {
+    println "Error: Please provide a JSON input as a command-line argument."
+    System.exit(1)
+}
+
+// Get the JSON input from the first command-line argument
+def jsonInput = args[0]
 
 // Parse the JSON input
 def jsonSlurper = new JsonSlurper()
