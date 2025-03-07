@@ -38,12 +38,6 @@ def data = [
     apiVersion: "automation.cloudbees.io/v1alpha1",
     kind: "workflow",
     name: "workflow",
-    inputs: [
-        environment: [
-            type: "string",
-            required: true
-        ]
-    ],
     on: [
         workflow_dispatch: [
             inputs: [
