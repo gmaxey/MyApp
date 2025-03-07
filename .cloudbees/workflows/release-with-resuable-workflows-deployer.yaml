@@ -11,4 +11,10 @@ on:
 jobs:
   pre-prod:
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
-    # uses: deployer
+    with:
+      environment: pre-prod
+  prod:
+    needs: pre-prod
+    uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+    with:
+      environment: prod
