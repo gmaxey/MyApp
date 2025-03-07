@@ -1,4 +1,4 @@
-// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy '[{"name":"MyAppAPIs","version":"2.0.5-0.0.17","workflow":"deploy.yaml"},{"name":"MyAppFE","version":"3.0.3-0.0.14","workflow":"deploy.yaml"},{"name":"MyAppBE","version":"2.2.0-0.0.21","workflow":"deploy.yaml"}]'
+// docker run --rm -v $(pwd):/scripts -w /scripts groovy:alpine groovy manifest-to-deployer.groovy '<JSON_HERE>'
 
 @Grab('org.yaml:snakeyaml:1.33')
 @Grab('org.codehaus.groovy:groovy-json')
@@ -27,20 +27,40 @@ def jobs = parsedJson.collectEntries { entry ->
             with: [
                 artifactName: entry.name,
                 artifactVersion: entry.version,
-                environment: "pre-prod"
+                environment: '${{ inputs.environment }}' // Use single quotes to prevent GString evaluation
             ]
         ]
     ]
 }
 
-// Define the data structure with dynamic jobs
+// Define the data structure with dynamic jobs and inputs
 def data = [
     apiVersion: "automation.cloudbees.io/v1alpha1",
     kind: "workflow",
     name: "workflow",
+    inputs: [
+        environment: [
+            type: "string",
+            required: true
+        ]
+    ],
     on: [
-        workflow_dispatch: null,
-        workflow_call: null 
+        workflow_dispatch: [
+            inputs: [
+                environment: [
+                    type: "string",
+                    required: true
+                ]
+            ]
+        ],
+        workflow_call: [
+            inputs: [
+                environment: [
+                    type: "string",
+                    required: true
+                ]
+            ]
+        ]
     ],
     jobs: jobs
 ]
