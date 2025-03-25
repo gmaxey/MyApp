@@ -3,6 +3,9 @@ kind: workflow
 name: Release with resuable workflows deployer
 on:
   workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
 jobs:
   pre-prod:
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
