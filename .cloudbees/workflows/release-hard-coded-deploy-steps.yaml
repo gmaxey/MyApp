@@ -21,3 +21,4 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}}
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
+          environment: pre-prod
