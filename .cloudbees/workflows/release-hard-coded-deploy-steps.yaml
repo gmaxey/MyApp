@@ -84,6 +84,18 @@ jobs:
           args: ""
           entrypoint: ""
         run: |-
+          echo MyAppAPIs
+          echo if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+          echo version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
+          echo url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
+          echo digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
+          echo
+          echo MyAppFE
+          echo if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
+          echo version: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].version }}
+          echo url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
+          echo digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
+          echo
           echo MyAppBE
           echo if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
           echo version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
@@ -91,4 +103,4 @@ jobs:
           echo digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
         uses: docker://golang:1.20.3-alpine3.17
         name: echo manifest items
-        shell: ""
+        shell: sh
