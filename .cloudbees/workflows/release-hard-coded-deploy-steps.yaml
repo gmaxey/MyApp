@@ -12,13 +12,20 @@ jobs:
   pre-prod:
     environment: pre-prod
     steps:
+      - name: Echo manifest items
+        run: |
+            echo if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+            echo version ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
+            echo digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }} 
+            echo url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}}
+        uses: docker://golang:1.20.3-alpine3.17
       - name: Deploy MyAppAPIs
-        if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
         kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
         uses: cloudbees-io/register-deployed-artifact@v1
         with:
-          name: MyAppAPIs
           version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}}
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
           target-environment: pre-prod
+          name: MyAppAPIs
