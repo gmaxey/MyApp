@@ -10,7 +10,6 @@ on:
         required: true
 jobs:
   pre-prod:
-    environment: pre-prod
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -46,7 +45,6 @@ jobs:
       - Setup
   prod:
     needs: pre-prod
-    environment: prod
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
