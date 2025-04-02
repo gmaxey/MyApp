@@ -42,6 +42,8 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: pre-prod
           name: MyAppBE
+    needs:
+      - Setup
   prod:
     needs: pre-prod
     environment: prod
@@ -76,3 +78,16 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: prod
           name: MyAppBE
+  Setup:
+    steps:
+      - with:
+          args: ""
+          entrypoint: ""
+        run: |-
+          echo MyAppBE
+          echo version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
+          echo url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
+          echo digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
+        uses: docker://golang:1.20.3-alpine3.17
+        name: echo manifest items
+        shell: ""
