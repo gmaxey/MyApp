@@ -1,0 +1,16 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: get manifest
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+jobs:
+  build:
+    steps:
+      - name: Get manifest
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          echo "${{ inputs.manifest }}"
