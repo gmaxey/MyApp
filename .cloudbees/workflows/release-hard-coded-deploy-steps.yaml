@@ -85,6 +85,7 @@ jobs:
           entrypoint: ""
         run: |-
           echo MyAppBE
+          echo if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
           echo version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
           echo url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
           echo digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
