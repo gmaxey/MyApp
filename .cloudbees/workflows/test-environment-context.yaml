@@ -1,0 +1,24 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: Test environment context
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+        default: '{MyAppAPIs:{MyAppAPIs:{deploy:true,digest:sha256:abi215aaa123abcdef===,name:MyAppAPIs,url:docker.io/MyApp/MyAppAPIs:2.1.5-0.0.115,version:2.1.5-0.0.115},deploy:true,id:ab463d0a-e825-4270-baee-49a051db872c},MyAppBE:{MyAppBE:{deploy:true,digest:sha256:be123abcdef===,name:MyAppBE,url:docker.io/MyApp/MyAppBE:2.3.0-0.0.136,version:2.3.0-0.0.136},deploy:true,id:9bd5b564-6f71-49f9-b4fb-047bbab802ed,some:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some10:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some11:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some2:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some3:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some4:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some5:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some6:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some7:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some8:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a},some9:{deploy:false,digest:n/a,name:n/a,url:n/a,version:n/a}},MyAppFE:{MyAppFE:{deploy:true,digest:sha256:fe313aaa123abcdef===,name:MyAppFE,url:docker.io/MyApp/MyAppFE:3.1.3-0.0.110,version:3.1.3-0.0.110},deploy:true,id:40e01279-51b0-42a4-8464-26a9c13f0287}}'
+jobs:
+  pre-prod:
+    environment: pre-prod
+    steps:
+      - name: Deploy MyAppAPIs
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
+          #target-environment: pre-prod
+          name: MyAppAPIs
