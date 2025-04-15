@@ -10,9 +10,11 @@ jobs:
   pre-prod:
     uses: gmaxey/reusableworkflows/manifestDeploy
     with:
+      manifest: ${{ inputs.manifest }}
       environment: pre-prod
   prod:
     needs: pre-prod
     uses: gmaxey/reusableworkflows/manifestDeploy
     with:
+      manifest: ${{ inputs.manifest }}
       environment: prod
