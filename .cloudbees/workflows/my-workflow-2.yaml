@@ -1,0 +1,42 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: My workflow
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+        description: A sample manifest should go here, to help user
+metadata:
+  stages/v1alpha1:
+    - name: pre-prod
+      jobs:
+        - deploy-pre-prod
+    - name: prod
+      jobs:
+        - deploy-prod
+jobs:
+  deploy-pre-prod:
+    name: deploy-pre-prod
+    environment: ""
+    outputs: {}
+    services: {}
+    steps:
+      - name: Deploy
+        uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+        with:
+          environment: pre-prod
+        kind: deploy
+  deploy-prod:
+    name: deploy-prod
+    needs: deploy-pre-prod
+    environment: ""
+    outputs: {}
+    services: {}
+    steps:
+      - name: Deploy
+        uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+        with:
+          environment: prod
+        kind: deploy
