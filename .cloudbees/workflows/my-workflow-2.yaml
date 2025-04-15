@@ -24,9 +24,9 @@ jobs:
     services: {}
     steps:
       - name: Deploy
-        uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+        uses: gmaxey/reusableworkflows/manifestDeploy
         with:
-          environment: pre-prod
+          manifest: ${{ inputs.manifest }}
         kind: deploy
   deploy-prod:
     name: deploy-prod
@@ -36,7 +36,7 @@ jobs:
     services: {}
     steps:
       - name: Deploy
-        uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+        uses: gmaxey/reusableworkflows/manifestDeploy
         with:
-          environment: prod
+          manifest: ${{ inputs.manifest }}
         kind: deploy
