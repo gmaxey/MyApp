@@ -12,14 +12,14 @@ metadata:
     - name: pre-prod
       jobs:
         - MyAppAPIs-pre
-          MyAppFE-pre
-          MyAppBE-pre
+        - MyAppFE-pre
+        - MyAppBE-pre
         
     - name: prod
       jobs:
         - MyAppAPIs-prod
-          MyAppFE-prod
-          MyAppBE-prod
+        - MyAppFE-prod
+        - MyAppBE-prod
 jobs:
   MyAppAPIs-pre:
     steps:
