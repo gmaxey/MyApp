@@ -1,0 +1,29 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: Staged Release with resuable manifest deployer
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+
+metadata:
+  stages/v1alpha1:
+    - name: pre-prod
+      jobs:
+        - pre-prod
+    - name: prod
+      jobs:
+        - prod
+jobs:
+  pre-prod:
+    uses: gmaxey/reusableworkflows/manifestDeploy.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: pre-prod
+  prod:
+    needs: pre-prod
+    uses: gmaxey/reusableworkflows/manifestDeploy.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: prod
