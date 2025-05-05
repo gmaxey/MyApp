@@ -1,0 +1,83 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: Staged Release with hard coded deploy steps
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+metadata:
+  stages/v1alpha1:
+    - name: pre-prod
+      jobs:
+        - pre-prod
+    - name: prod
+      jobs:
+        - prod
+jobs:
+  pre-prod:
+    steps:
+      - name: Deploy MyAppAPIs
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
+          target-environment: pre-prod
+          name: MyAppAPIs
+      - name: Deploy MyAppFE
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
+          target-environment: pre-prod
+          name: MyAppFE
+      - name: Deploy MyAppBE
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
+          target-environment: pre-prod
+          name: MyAppBE
+  prod:
+    needs: pre-prod
+    steps:
+      - name: Deploy MyAppAPIs
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
+          target-environment: prod
+          name: MyAppAPIs
+      - name: Deploy MyAppFE
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
+          target-environment: prod
+          name: MyAppFE
+      - name: Deploy MyAppBE
+        kind: deploy
+        if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
+          url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
+          digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
+          target-environment: prod
+          name: MyAppBE
