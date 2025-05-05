@@ -11,12 +11,17 @@ metadata:
   stages/v1alpha1:
     - name: pre-prod
       jobs:
-        - pre-prod
+        - MyAppAPIs-pre
+          MyAppFE-pre
+          MyAppBE-pre
+        
     - name: prod
       jobs:
-        - prod
+        - MyAppAPIs-prod
+          MyAppFE-prod
+          MyAppBE-prod
 jobs:
-  pre-prod:
+  MyAppAPIs-pre:
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -28,6 +33,9 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
           target-environment: pre-prod
           name: MyAppAPIs
+  MyAppFE-pre:
+    needs: MyAppAPIs-pre
+    steps:
       - name: Deploy MyAppFE
         kind: deploy
         if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
@@ -38,6 +46,9 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
           target-environment: pre-prod
           name: MyAppFE
+  MyAppBE-pre:
+    needs: MyAppFE-pre
+    steps:
       - name: Deploy MyAppBE
         kind: deploy
         if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
@@ -48,8 +59,8 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: pre-prod
           name: MyAppBE
-  prod:
-    needs: pre-prod
+  MyAppAPIs-prod:
+    needs: MyAppBE-pre
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -61,6 +72,9 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
           target-environment: prod
           name: MyAppAPIs
+  MyAppFE-prod:
+    needs: MyAppAPIs-prod
+    steps:
       - name: Deploy MyAppFE
         kind: deploy
         if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
@@ -71,6 +85,9 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
           target-environment: prod
           name: MyAppFE
+  MyAppBE-prod:
+    needs: MyAppFE-prod
+    steps:
       - name: Deploy MyAppBE
         kind: deploy
         if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
