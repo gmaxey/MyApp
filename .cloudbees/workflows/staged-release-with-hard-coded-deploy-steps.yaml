@@ -14,7 +14,7 @@ metadata:
         - MyAppAPIs-pre
         - MyAppFE-pre
         - MyAppBE-pre
-        
+        - Review_and_Approve
     - name: prod
       jobs:
         - MyAppAPIs-prod
@@ -33,9 +33,11 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
           target-environment: pre-prod
           name: MyAppAPIs
+    needs: []
   MyAppFE-pre:
     if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
-    needs: MyAppAPIs-pre
+    needs:
+      - MyAppAPIs-pre
     steps:
       - name: Deploy MyAppFE
         kind: deploy
@@ -48,7 +50,8 @@ jobs:
           name: MyAppFE
   MyAppBE-pre:
     if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
-    needs: MyAppFE-pre
+    needs:
+      - MyAppFE-pre
     steps:
       - name: Deploy MyAppBE
         kind: deploy
@@ -61,7 +64,8 @@ jobs:
           name: MyAppBE
   MyAppAPIs-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
-    needs: MyAppBE-pre
+    needs:
+      - Review_and_Approve
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -74,7 +78,8 @@ jobs:
           name: MyAppAPIs
   MyAppFE-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
-    needs: MyAppAPIs-prod
+    needs:
+      - MyAppAPIs-prod
     steps:
       - name: Deploy MyAppFE
         kind: deploy
@@ -87,7 +92,8 @@ jobs:
           name: MyAppFE
   MyAppBE-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
-    needs: MyAppFE-prod
+    needs:
+      - MyAppFE-prod
     steps:
       - name: Deploy MyAppBE
         kind: deploy
@@ -98,3 +104,13 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: prod
           name: MyAppBE
+  Review_and_Approve:
+    needs:
+      - MyAppBE-pre
+    timeout-minutes: 4320
+    with:
+      instructions: ""
+      disallowLaunchByUser: false
+      approvers: ""
+      notifyAllEligibleUsers: false
+    delegates: cloudbees-io/manual-approval/custom-job.yml@v1
