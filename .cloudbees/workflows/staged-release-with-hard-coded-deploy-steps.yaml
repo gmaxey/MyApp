@@ -14,7 +14,6 @@ metadata:
         - MyAppAPIs-pre
         - MyAppFE-pre
         - MyAppBE-pre
-        - Review_and_Approve
     - name: prod
       jobs:
         - MyAppAPIs-prod
@@ -65,7 +64,7 @@ jobs:
   MyAppAPIs-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
     needs:
-      - Review_and_Approve
+      - MyAppBE-pre
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -104,13 +103,3 @@ jobs:
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: prod
           name: MyAppBE
-  Review_and_Approve:
-    needs:
-      - MyAppBE-pre
-    timeout-minutes: 4320
-    with:
-      instructions: ""
-      disallowLaunchByUser: false
-      approvers: ""
-      notifyAllEligibleUsers: false
-    delegates: cloudbees-io/manual-approval/custom-job.yml@v1
