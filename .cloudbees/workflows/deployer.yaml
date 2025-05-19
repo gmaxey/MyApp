@@ -1,33 +1,35 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: workflow
-'on':
-  workflow_dispatch:
-    inputs:
-      environment:
-        type: string
-        required: true
+on:
   workflow_call:
     inputs:
       environment:
         type: string
         required: true
+      manifest:
+        type: string
+        required: true
+
 jobs:
   MyAppAPIs:
-    uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
+    if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+    uses: gmaxey/MyAppAPIs/.cloudbees/workflows/deploy.yaml
     with:
       artifactName: MyAppAPIs
-      artifactVersion: 2.0.5-0.0.17
+      artifactVersion: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
       environment: ${{ inputs.environment }}
   MyAppFE:
-    uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
+    if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
+    uses: gmaxey/MyAppFE/.cloudbees/workflows/deploy.yaml
     with:
       artifactName: MyAppFE
-      artifactVersion: 3.0.3-0.0.14
+      artifactVersion: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].version }}
       environment: ${{ inputs.environment }}
   MyAppBE:
-    uses: gmaxey/reusableworkflows/MyAppDeploy.yaml
+    if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
+    uses: gmaxey/MyAppBE/.cloudbees/workflows/deploy.yaml
     with:
       artifactName: MyAppBE
-      artifactVersion: 2.2.0-0.0.21
+      artifactVersion: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
       environment: ${{ inputs.environment }}
