@@ -17,13 +17,13 @@ metadata:
         - prod
 jobs:
   pre-prod:
-    uses: deployer.yaml
+    uses: ./deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
       environment: pre-prod
   prod:
     needs: pre-prod
-    uses: deployer.yaml
+    uses: ./deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
       environment: prod
