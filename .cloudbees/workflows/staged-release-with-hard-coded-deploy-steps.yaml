@@ -45,7 +45,7 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
-          target-environment: pre-prod
+          target-environment: myapp-pre-prod
           name: MyAppFE
   MyAppBE-pre:
     if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
@@ -59,7 +59,7 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
-          target-environment: pre-prod
+          target-environment: myapp-pre-prod
           name: MyAppBE
   MyAppAPIs-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
@@ -73,7 +73,7 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
-          target-environment: prod
+          target-environment: myapp-prod
           name: MyAppAPIs
   MyAppFE-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
@@ -87,7 +87,7 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
-          target-environment: prod
+          target-environment: myapp-prod
           name: MyAppFE
   MyAppBE-prod:
     if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
@@ -101,5 +101,5 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
-          target-environment: prod
+          target-environment: myapp-prod
           name: MyAppBE
