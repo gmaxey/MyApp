@@ -30,7 +30,7 @@ jobs:
           version: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].version }}
           url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
-          target-environment: pre-prod
+          target-environment: myapp-pre-prod
           name: MyAppAPIs
     needs: []
   MyAppFE-pre:
