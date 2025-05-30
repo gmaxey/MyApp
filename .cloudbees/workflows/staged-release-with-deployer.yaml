@@ -21,10 +21,10 @@ jobs:
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
-      environment: pre-prod
+      environment: myapp-pre-prod
   prod:
     needs: pre-prod
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
-      environment: prod
+      environment: myapp-prod
