@@ -6,7 +6,7 @@ on:
     inputs:
       manifest:
         type: string
-        requireed: true
+        required: true
 
 metadata:
   stages/v1alpha1:
