@@ -21,7 +21,7 @@ metadata:
         - MyAppBE-prod
 jobs:
   MyAppAPIs-pre:
-    if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
+    environment: pre-prod
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -31,12 +31,11 @@ jobs:
           url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
           target-environment: myapp-pre-prod
-          name: MyAppAPIs
-    needs: []
+          action-name: MyAppAPIs
   MyAppFE-pre:
-    if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
     needs:
       - MyAppAPIs-pre
+    environment: pre-prod
     steps:
       - name: Deploy MyAppFE
         kind: deploy
@@ -46,11 +45,11 @@ jobs:
           url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
           target-environment: myapp-pre-prod
-          name: MyAppFE
+          action-name: MyAppFE
   MyAppBE-pre:
-    if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
     needs:
       - MyAppFE-pre
+    environment: pre-prod
     steps:
       - name: Deploy MyAppBE
         kind: deploy
@@ -60,11 +59,11 @@ jobs:
           url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: myapp-pre-prod
-          name: MyAppBE
+          action-name: MyAppBE
   MyAppAPIs-prod:
-    if: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].deploy }}
     needs:
       - MyAppBE-pre
+    environment: prod
     steps:
       - name: Deploy MyAppAPIs
         kind: deploy
@@ -74,11 +73,11 @@ jobs:
           url: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppAPIs']['MyAppAPIs'].digest }}
           target-environment: myapp-prod
-          name: MyAppAPIs
+          action-name: MyAppAPIs
   MyAppFE-prod:
-    if: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].deploy }}
     needs:
       - MyAppAPIs-prod
+    environment: prod
     steps:
       - name: Deploy MyAppFE
         kind: deploy
@@ -88,11 +87,11 @@ jobs:
           url: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].digest }}
           target-environment: myapp-prod
-          name: MyAppFE
+          action-name: MyAppFE
   MyAppBE-prod:
-    if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
     needs:
       - MyAppFE-prod
+    environment: prod
     steps:
       - name: Deploy MyAppBE
         kind: deploy
@@ -102,4 +101,4 @@ jobs:
           url: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].url }}
           digest: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].digest }}
           target-environment: myapp-prod
-          name: MyAppBE
+          action-name: MyAppBE
