@@ -11,26 +11,27 @@ metadata:
   stages/v1alpha1:
     - name: pre-prod
       jobs:
+        - gather-evidence
         - pre-prod
     - name: prod
       jobs:
-        - prod
         - Production-Approval
+        - prod
 jobs:
+  gather-evidence:
+    - uses: cloudbees-io/publish-evidence-item@v1
+      name: Publish evidence
+      with:
+        content: |-
+          Tickets Closed: MYAPP-12237, MYAPP-12256, MYAPP-12261
   pre-prod:
+    needs: gather-evidence
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
       environment: myapp-pre-prod
-  prod:
-    needs: pre-prod
-    uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
-    with:
-      manifest: ${{ inputs.manifest }}
-      environment: myapp-prod
   Production-Approval:
-    needs:
-      - prod
+    needs: pre-prod
     timeout-minutes: 4320
     with:
       instructions: Please approve for production deployment
@@ -38,3 +39,10 @@ jobs:
       approvers: ""
       notifyAllEligibleUsers: false
     delegates: cloudbees-io/manual-approval/custom-job.yml@v1
+  prod:
+    needs: Production-Approval
+    uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: myapp-prod
+  
