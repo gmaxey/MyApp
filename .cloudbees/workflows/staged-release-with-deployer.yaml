@@ -7,7 +7,6 @@ on:
       manifest:
         type: string
         required: true
-
 metadata:
   stages/v1alpha1:
     - name: pre-prod
@@ -16,6 +15,7 @@ metadata:
     - name: prod
       jobs:
         - prod
+        - Production-Approval
 jobs:
   pre-prod:
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
@@ -28,3 +28,13 @@ jobs:
     with:
       manifest: ${{ inputs.manifest }}
       environment: myapp-prod
+  Production-Approval:
+    needs:
+      - prod
+    timeout-minutes: 4320
+    with:
+      instructions: Please approve for production deployment
+      disallowLaunchByUser: false
+      approvers: ""
+      notifyAllEligibleUsers: false
+    delegates: cloudbees-io/manual-approval/custom-job.yml@v1
