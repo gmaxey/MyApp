@@ -11,21 +11,15 @@ metadata:
   stages/v1alpha1:
     - name: pre-prod
       jobs:
-        - gather-evidence
+        - Gather-evidence
         - pre-prod
     - name: prod
       jobs:
         - Production-Approval
         - prod
 jobs:
-  gather-evidence:
-    - uses: cloudbees-io/publish-evidence-item@v1
-      name: Publish evidence
-      with:
-        content: |-
-          Tickets Closed: MYAPP-12237, MYAPP-12256, MYAPP-12261
   pre-prod:
-    needs: gather-evidence
+    needs: Gather-evidence
     uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
@@ -45,4 +39,10 @@ jobs:
     with:
       manifest: ${{ inputs.manifest }}
       environment: myapp-prod
+  Gather-evidence:
+    steps:
+      - name: Publish evidence
+        with:
+          content: "Tickets Closed: MYAPP-12237, MYAPP-12256, MYAPP-12261"
+        uses: cloudbees-io/publish-evidence-item@v1
   
