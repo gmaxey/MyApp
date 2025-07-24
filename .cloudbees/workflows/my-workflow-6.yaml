@@ -1,0 +1,47 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: My workflow
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+        description: This is a system-generated parameter and is required for use in
+          application releases. Refer to
+          https://docs.cloudbees.com/docs/cloudbees-platform/latest/applications/releases#manifest
+          for the expected format
+metadata:
+  stages/v1alpha1:
+    - name: QA
+      jobs:
+        - deploy-to-QA
+    - name: staging
+      jobs:
+        - deploy-to-staging
+    - name: FM-env2
+      jobs:
+        - deploy-to-FM-env2
+jobs:
+  deploy-to-QA:
+    steps:
+      - name: Deploy to QA
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: echo "Deploying to QA"
+  deploy-to-staging:
+    needs:
+      - deploy-to-QA
+    steps:
+      - name: Deploy to staging
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: echo "Deploying to staging"
+  deploy-to-FM-env2:
+    needs:
+      - deploy-to-staging
+    steps:
+      - name: Deploy to FM-env2
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: echo "Deploying to FM-env2"
