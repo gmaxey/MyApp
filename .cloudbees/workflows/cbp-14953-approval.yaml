@@ -2,7 +2,10 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: CBP-14953-approval
 on:
-  workflow_dispatch: null
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
 metadata:
   stages/v1alpha1:
     - name: QA
