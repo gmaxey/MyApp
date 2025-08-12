@@ -16,9 +16,9 @@ metadata:
     - name: QA
       jobs:
         - deploy-to-QA
+        - tests
         - Exit-conditions
         - exit-approval
-        - tests
     - name: staging
       jobs:
         - deploy-to-staging
@@ -73,7 +73,7 @@ jobs:
       notifyAllEligibleUsers: false
   tests:
     needs:
-      - exit-approval
+      - deploy-to-QA
     steps:
       - run: echo
         uses: docker://golang:1.20.3-alpine3.17
