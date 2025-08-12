@@ -1,0 +1,85 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: with-gates
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+        description: This is a system-generated parameter and is required for use in
+          application releases. Refer to
+          https://docs.cloudbees.com/docs/cloudbees-platform/latest/applications/releases#manifest
+          for the expected format
+metadata:
+  stages/v1alpha1:
+    - name: QA
+      jobs:
+        - deploy-to-QA
+        - Exit-conditions
+        - exit-approval
+        - tests
+    - name: staging
+      jobs:
+        - deploy-to-staging
+    - name: production
+      jobs:
+        - deploy-to-production
+jobs:
+  deploy-to-QA:
+    steps:
+      - name: Deploy to QA
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: echo "Deploying to QA"
+    needs: []
+  deploy-to-staging:
+    needs:
+      - tests
+    steps:
+      - name: Deploy to staging
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: echo "Deploying to staging"
+  deploy-to-production:
+    needs:
+      - deploy-to-staging
+      - tests
+    steps:
+      - name: Deploy to production
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: echo "Deploying to production"
+  Exit-conditions:
+    needs:
+      - deploy-to-QA
+    steps:
+      - run: echo checking
+        uses: docker://golang:1.20.3-alpine3.17
+        name: code-coverage-threshold
+        shell: sh
+      - uses: docker://golang:1.20.3-alpine3.17
+        name: regression-coverage-threshold
+        shell: sh
+  exit-approval:
+    needs:
+      - Exit-conditions
+    timeout-minutes: 4320
+    delegates: cloudbees-io/manual-approval/custom-job.yml@v1
+    with:
+      instructions: ""
+      disallowLaunchByUser: false
+      approvers: ""
+      notifyAllEligibleUsers: false
+  tests:
+    needs:
+      - exit-approval
+    steps:
+      - run: echo
+        uses: docker://golang:1.20.3-alpine3.17
+        name: regression
+        shell: sh
+      - run: echo
+        uses: docker://golang:1.20.3-alpine3.17
+        name: code coverage
+        shell: sh
