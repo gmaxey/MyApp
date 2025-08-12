@@ -33,26 +33,21 @@ jobs:
         shell: sh
         run: echo "Deploying to QA"
     needs: []
-  deploy-to-staging:
-    needs:
-      - tests
-    steps:
-      - name: Deploy to staging
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
-        run: echo "Deploying to staging"
-  deploy-to-production:
-    needs:
-      - deploy-to-staging
-      - tests
-    steps:
-      - name: Deploy to production
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
-        run: echo "Deploying to production"
-  Exit-conditions:
+  tests:
     needs:
       - deploy-to-QA
+    steps:
+      - run: echo
+        uses: docker://golang:1.20.3-alpine3.17
+        name: regression
+        shell: sh
+      - run: echo
+        uses: docker://golang:1.20.3-alpine3.17
+        name: code coverage
+        shell: sh
+  Exit-conditions:
+    needs:
+      - tests
     steps:
       - run: echo checking
         uses: docker://golang:1.20.3-alpine3.17
@@ -71,15 +66,23 @@ jobs:
       disallowLaunchByUser: false
       approvers: ""
       notifyAllEligibleUsers: false
-  tests:
+      
+  deploy-to-staging:
     needs:
-      - deploy-to-QA
+      - tests
     steps:
-      - run: echo
+      - name: Deploy to staging
         uses: docker://golang:1.20.3-alpine3.17
-        name: regression
         shell: sh
-      - run: echo
+        run: echo "Deploying to staging"
+        
+  deploy-to-production:
+    needs:
+      - deploy-to-staging
+      - tests
+    steps:
+      - name: Deploy to production
         uses: docker://golang:1.20.3-alpine3.17
-        name: code coverage
         shell: sh
+        run: echo "Deploying to production"
+  
