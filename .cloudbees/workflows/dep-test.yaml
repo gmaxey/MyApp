@@ -1,0 +1,47 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: dep-test
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+        description: This is a system-generated parameter and is required for use in
+          application releases. Refer to
+          https://docs.cloudbees.com/docs/cloudbees-platform/latest/applications/releases#manifest
+          for the expected format
+metadata:
+  stages/v1alpha1:
+    - name: QA
+      jobs:
+        - QA
+    - name: staging
+      jobs:
+        - staging
+    - name: FM-env2
+      jobs:
+        - FM-env2
+jobs:
+  QA:
+    environment: QA
+    uses: .cloudbees/workflows/deployer.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: ${{ cloudbees.job.environment }}
+  staging:
+    needs:
+      - QA
+    environment: staging
+    uses: .cloudbees/workflows/deployer.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: ${{ cloudbees.job.environment }}
+  FM-env2:
+    needs:
+      - staging
+    environment: FM-env2
+    uses: .cloudbees/workflows/deployer.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: ${{ cloudbees.job.environment }}
