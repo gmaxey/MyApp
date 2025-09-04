@@ -20,7 +20,7 @@ metadata:
 jobs:
   pre-prod:
     needs: Gather-evidence
-    uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+    uses: .cloudbees/workflows/deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
       environment: myapp-pre-prod
@@ -35,7 +35,7 @@ jobs:
     delegates: cloudbees-io/manual-approval/custom-job.yml@v1
   prod:
     needs: Production-Approval
-    uses: gmaxey/MyApp/.cloudbees/workflows/deployer.yaml
+    uses: .cloudbees/workflows/deployer.yaml
     with:
       manifest: ${{ inputs.manifest }}
       environment: myapp-prod
