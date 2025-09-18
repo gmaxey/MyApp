@@ -14,12 +14,12 @@ on:
       environment:
         type: string
         required: true
-      num:
+      numx:
         type: number
-      bool:
+      boolx:
         type: boolean
         default: false
-      enum:
+      enumx:
         type: choice
         options:
           - a
