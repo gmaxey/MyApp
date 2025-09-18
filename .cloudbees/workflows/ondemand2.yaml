@@ -1,0 +1,39 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: On demand deployment
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        type: string
+        required: true
+        description: This is a system-generated parameter and is required for use in
+          application releases. Refer to
+          https://docs.cloudbees.com/docs/cloudbees-platform/latest/applications/releases#manifest
+          for the expected format
+      environment:
+        type: string
+        required: true
+      num:
+        type: number
+      bool:
+        type: boolean
+        default: false
+      enum:
+        type: choice
+        options:
+          - a
+          - b
+          - c
+        default: ""
+metadata:
+  stages/v1alpha1:
+    - name: Target-Environment
+      jobs:
+        - Deployer
+jobs:
+  Deployer:
+    uses: ./.cloudbees/workflows/deployer.yaml
+    with:
+      manifest: ${{ inputs.manifest }}
+      environment: ${{ inputs.environment }}
