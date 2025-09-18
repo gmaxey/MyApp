@@ -13,6 +13,8 @@ on:
           - a
           - b
           - c
+        default: ""
+        required: true
 jobs:
   build:
     steps:
