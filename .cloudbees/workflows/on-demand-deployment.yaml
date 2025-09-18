@@ -14,18 +14,6 @@ on:
       environment:
         type: string
         required: true
-      num:
-        type: number
-      bool:
-        type: boolean
-        default: false
-      enum:
-        type: choice
-        options:
-          - a
-          - b
-          - c
-        default: a
 metadata:
   stages/v1alpha1:
     - name: Target-Environment
