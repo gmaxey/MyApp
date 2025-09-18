@@ -25,7 +25,7 @@ on:
           - a
           - b
           - c
-        default: ""
+        default: "a"
 metadata:
   stages/v1alpha1:
     - name: Target-Environment
