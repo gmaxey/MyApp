@@ -11,7 +11,6 @@ metadata:
   stages/v1alpha1:
     - name: Dev
       jobs:
-        - dev
         - exit-dev
     - name: pre-prod
       jobs:
@@ -50,14 +49,7 @@ jobs:
           content: "Tickets Closed: MYAPP-12237, MYAPP-12256, MYAPP-12261"
         uses: cloudbees-io/publish-evidence-item@v1
     needs: exit-dev
-  dev:
-    uses: ./.cloudbees/workflows/deployer.yaml
-    with:
-      manifest: ${{ inputs.manifest }}
-      environment: myapp-dev
   exit-dev:
-    needs:
-      - dev
     timeout-minutes: 4320
     delegates: cloudbees-io/manual-approval/custom-job.yml@v1
     with:
