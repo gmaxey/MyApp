@@ -8,7 +8,6 @@ on:
         type: string
         required: true
         description: Parameter required for release workflows
-        
 metadata:
   stages/v1alpha1:
     - name: env1
@@ -17,19 +16,8 @@ metadata:
     - name: env2
       jobs:
         - deploy-env2
-    - name: env3
-      jobs:
-        - deploy-env2
-
 jobs:
   deploy-env1:
-    steps:
-      - name: Deploy
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
-        run: |
-          echo Deploying...
-  deploy-env2:
     steps:
       - name: Deploy
         uses: docker://golang:1.20.3-alpine3.17
