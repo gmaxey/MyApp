@@ -25,12 +25,12 @@ jobs:
     with:
       artifact-id: ${{ fromJSON(inputs.manifest)['MyAppFE']['MyAppFE'].id }}
       environment: ${{ inputs.environment }}
-  MyAppFE-my_version:
-    if: ${{ fromJSON(inputs.manifest)['MyAppFE']['my version'].deploy }}
-    uses: gmaxey/MyAppFE/.cloudbees/workflows/deploy.yaml
-    with:
-      artifact-id: ${{ fromJSON(inputs.manifest)['MyAppFE']['my version'].id }}
-      environment: ${{ inputs.environment }}
+  #MyAppFE-my_version:
+  #  if: ${{ fromJSON(inputs.manifest)['MyAppFE']['my version'].deploy }}
+  #  uses: gmaxey/MyAppFE/.cloudbees/workflows/deploy.yaml
+  #  with:
+  #    artifact-id: ${{ fromJSON(inputs.manifest)['MyAppFE']['my version'].id }}
+  #    environment: ${{ inputs.environment }}
   MyAppBE:
     if: ${{ fromJSON(inputs.manifest)['MyAppBE']['MyAppBE'].deploy }}
     uses: gmaxey/MyAppBE/.cloudbees/workflows/deploy.yaml
